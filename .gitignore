@@ -1,0 +1,36 @@
+# --- data and results ---------------------------------------------------------
+# Everything the pipeline produces lives under data/. None of it belongs in git:
+# the preprocessed arrays alone are hundreds of GB.
+data/
+*.nii
+*.nii.gz
+*.b2nd
+*.npy
+*.npz
+*.pkl
+
+# ... except the two tiny volumes nnU-Net's own tests ship with
+!nnUNet/nnunetv2/tests/example_data/*.nii.gz
+
+# generated command lists (regenerate with scripts/gen_commands.py)
+*_commands.sh
+
+# --- python -------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# --- editors / os -------------------------------------------------------------
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- backups ------------------------------------------------------------------
+*.bak
+*.bak-*
