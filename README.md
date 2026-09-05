@@ -1,8 +1,8 @@
 # nnU-Net Unified Benchmark
 
-A single nnU-Net v2 command line for eleven segmentation methods: ten published architectures (Swin UNETR, SwinUNETR-V2, V-Net, 3D U-Net, TransBTS, STU-Net, MedNeXt, nnFormer, UNETR, CoTr) plus nnU-Net itself in `2d` and `3d_fullres`. All eleven share one preprocessing run, one patch size and one batch size. Each method keeps the optimiser, schedule and learning rate of its own paper or official implementation.
+A single nnU-Net v2 command line for twelve shared-pipeline models: ten published architectures (Swin UNETR-V1, Swin UNETR-V2, V-Net, 3D U-Net, TransBTS, STU-Net, MedNeXt, nnFormer, UNETR, CoTr) plus nnU-Net itself in `2d` and `3d_fullres`. All twelve share one preprocessing run, fixed patch and batch sizes for each input dimensionality. Each method keeps the optimizer, schedule and learning rate of its own paper or official implementation.
 
-Adds five training-set definitions (`-M0`..`-M4`), an optional second output head (`-head2`), and three connected-component constraints at inference (`-A`/`-B`/`-C`).
+Adds five training compositions (`-M0`..`-M4`), an optional second output head (`-head2`), and three top-3 export cap variants at inference (`-A`/`-B`/`-C`).
 
 ## Installation
 
@@ -23,7 +23,7 @@ Source `env.sh` in every shell. It derives the repository root from its own loca
 | `NNUNET_BENCH_DATA` | `<REPO>/data` | data root |
 | `nnUNet_n_proc_DA` | `12` | data-augmentation workers |
 | `nnUNet_compile` | `0` | `torch.compile`; off because several networks do not compile cleanly |
-| `nnUNet_unified_amp` | `bf16` | mixed precision (`bf16`/`fp16`) |
+| `nnUNet_unified_amp` | `bf16` | mixed precision (bfloat16/float16) |
 | `nnUNet_unified_patch3d` / `nnUNet_unified_batch3d` | `128,128,128` / `2` | 3D patch and batch size |
 | `nnUNet_unified_patch2d` / `nnUNet_unified_batch2d` | `512,512` / `12` | 2D patch and batch size |
 | `nnUNet_unified_epochs` / `nnUNet_unified_iters` | `1000` / `250` | epochs and iterations per epoch |
@@ -35,7 +35,7 @@ ${NNUNET_BENCH_DATA}
     [nnUNet_raw]
         [Dataset001_M0] [Dataset002_M1] [Dataset003_M2] [Dataset004_M3] [Dataset005_M4]
             - dataset.json
-            [imagesTr]      # sub-testNNN_0000.nii.gz (T1w), _0001.nii.gz (FLAIR)
+            [imagesTr]      # sub-testNNN_0000.nii.gz (T1-weighted), _0001.nii.gz (FLAIR)
             [labelsTr]      # sub-testNNN.nii.gz, uint8 0/1
             [imagesTs]
     [nnUNet_preprocessed]
@@ -43,7 +43,7 @@ ${NNUNET_BENCH_DATA}
     [lists]
         - head2_train_M4.txt
         - head2_test_all.txt
-    [labelsTs_all]          # test-set labels, used for evaluation
+    [labelsTs_all]          # external test reference masks, used for evaluation
     [predictions]
     [evaluation]
 ```
@@ -77,7 +77,7 @@ nnUNetv2_train 005 3d_fullres 0 -tr nnformer -M4 \
 `-tr` accepts `swinunetrv1` `swinunetrv2` `vnet` `3dunet` `transbts` `stunet`
 `mednext3d` `nnformer` `unetr` `cotr` `nnunet`.
 
-All results were produced with `bf16`, the default; MedNeXt, STU-Net and UNETR overflow in `fp16`.
+All results were produced with bfloat16 (`bf16`), the default; MedNeXt, STU-Net and UNETR overflow in float16 (`fp16`).
 
 ## Validation
 
@@ -136,16 +136,16 @@ nnUNetv2_predict \
     -head2 ${NNUNET_BENCH_DATA}/lists/head2_test_all.txt
 ```
 
-`-A`, `-B` and `-C` are mutually exclusive. All three keep only the three highest-scoring 26-connected components (`-topk` changes the count); they differ in how a component is scored: `-A` the 95th percentile of its probabilities, `-B` the mean of its 50 highest-probability voxels, `-C` the mean of its voxels above 0.3.
+`-A`, `-B` and `-C` are mutually exclusive. All three keep only the three most confident 26-connected clusters (`-topk` changes the count); they differ in how cluster confidence is calculated: `-A` the 95th percentile of its voxel probabilities, `-B` the mean of its 50 highest voxel probabilities, `-C` the mean of its voxel probabilities above 0.3.
 
 ## License
 
 Licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
 
-## Acknowledgement
+## Acknowledgements
 
 Our code is based on the [nnU-Net](https://github.com/MIC-DKFZ/nnUNet) framework.
-Swin UNETR, SwinUNETR-V2, UNETR, V-Net and 3D U-Net are built with
+Swin UNETR-V1, Swin UNETR-V2, UNETR, V-Net and 3D U-Net are built with
 [MONAI](https://github.com/Project-MONAI/MONAI); the implementations of
 [TransBTS](https://github.com/Wenxuan-1119/TransBTS),
 [STU-Net](https://github.com/uni-medical/STU-Net),
