@@ -9,7 +9,7 @@ Adds five training compositions (`-M0`..`-M4`), an optional second output head (
 ```bash
 conda activate nnunet
 pip install --no-deps --no-cache-dir 'monai==1.4.0'
-source /path/to/nnunet-unified-benchmark/scripts/env.sh
+source /path/to/Epileptogenic-Cortical-Lesion-Detection-Benchmark/scripts/env.sh
 ```
 
 `--no-deps` is required, otherwise the resolver upgrades torch to an incompatible version. Minimum versions: `monai>=1.4.0`, `batchgeneratorsv2>=0.3.5`,
