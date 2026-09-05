@@ -1,4 +1,4 @@
-# nnU-Net Unified Benchmark
+# Epileptogenic Cortical Lesion Detection Benchmark
 
 A single nnU-Net v2 command line for twelve shared-pipeline models: ten published architectures (Swin UNETR-V1, Swin UNETR-V2, V-Net, 3D U-Net, TransBTS, STU-Net, MedNeXt, nnFormer, UNETR, CoTr) plus nnU-Net itself in `2d` and `3d_fullres`. All twelve share one preprocessing run, fixed patch and batch sizes for each input dimensionality. Each method keeps the optimizer, schedule and learning rate of its own paper or official implementation.
 
